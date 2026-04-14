@@ -1,20 +1,29 @@
 import { Link } from "react-router-dom";
 import { Calendar, ArrowRight } from "lucide-react";
 import SectionHeader from "./SectionHeader";
-import { defaultEvents } from "@/data/cmsData";
+import { usePreviewSectionDraft } from "@/components/admin/PreviewDraftContext";
+import { homeDefaults } from "@/lib/cmsDefaults";
+import { useContentBlocks, useEvents } from "@/hooks/useContentBlocks";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const EventsPreview = () => {
-  const events = JSON.parse(localStorage.getItem("vsm_events") || "null") || defaultEvents;
+  const blocksQuery = useContentBlocks("home", "events_preview");
+  const merged = { ...homeDefaults.events_preview, ...(blocksQuery.data ?? {}) };
+  const draft = usePreviewSectionDraft("home", "events_preview", merged);
+  const eventsQuery = useEvents(Number(draft.show_count));
+  if (blocksQuery.isLoading || eventsQuery.isLoading) return <section className="section-padding"><Skeleton className="h-72 w-full" /></section>;
+  if (blocksQuery.error || eventsQuery.error) return <section className="section-padding"><div className="text-sm text-destructive">Failed to load events preview.</div></section>;
+  const events = eventsQuery.data ?? [];
 
   return (
     <section className="section-padding">
       <div className="container-narrow mx-auto">
         <SectionHeader
-          title="Upcoming Events"
+          title={String(draft.section_heading)}
           subtitle="Stay updated with the latest happenings at our school."
         />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {events.slice(0, 3).map((event: typeof defaultEvents[0], i: number) => (
+          {events.map((event, i: number) => (
             <div
               key={event.id}
               className="group bg-card rounded-xl overflow-hidden border border-border hover:shadow-lg transition-all duration-300"
@@ -22,7 +31,7 @@ const EventsPreview = () => {
             >
               <div className="aspect-[3/2] overflow-hidden">
                 <img
-                  src={event.image}
+                  src={event.image_url ?? ""}
                   alt={event.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   loading="lazy"
@@ -33,10 +42,10 @@ const EventsPreview = () => {
               <div className="p-6">
                 <div className="flex items-center gap-2 text-muted-foreground text-xs mb-3">
                   <Calendar size={12} />
-                  <span>{new Date(event.date).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}</span>
+                  <span>{event.event_date ? new Date(event.event_date).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" }) : ""}</span>
                 </div>
                 <h3 className="font-heading text-lg font-semibold text-card-foreground mb-2">{event.title}</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">{event.description}</p>
+                <p className="text-muted-foreground text-sm leading-relaxed">{event.description ?? ""}</p>
               </div>
             </div>
           ))}

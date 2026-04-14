@@ -1,11 +1,27 @@
 import { Link } from "react-router-dom";
-import heroImg from "@/assets/hero-school.jpg";
+import { usePreviewSectionDraft } from "@/components/admin/PreviewDraftContext";
+import { homeDefaults } from "@/lib/cmsDefaults";
+import { useContentBlocks } from "@/hooks/useContentBlocks";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const HeroSection = () => {
+  const query = useContentBlocks("home", "hero");
+  const merged = { ...homeDefaults.hero, ...(query.data ?? {}) };
+  const draft = usePreviewSectionDraft("home", "hero", merged);
+  if (query.isLoading) {
+    return <section className="section-padding"><Skeleton className="h-[420px] w-full" /></section>;
+  }
+  if (query.error) {
+    return <section className="section-padding"><div className="text-sm text-destructive">Failed to load hero section.</div></section>;
+  }
+  if (!draft.active) {
+    return null;
+  }
+
   return (
     <section className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden">
       <img
-        src={heroImg}
+        src={String(draft.hero_image_url)}
         alt="Vardhman Shiksha Mandir Campus"
         className="absolute inset-0 w-full h-full object-cover"
         width={1920}
@@ -17,18 +33,17 @@ const HeroSection = () => {
           An English Medium Senior Secondary School
         </p>
         <h1 className="font-heading text-4xl md:text-6xl lg:text-7xl font-bold text-primary-foreground mb-6 animate-slide-up leading-tight">
-          Vardhman Shiksha Mandir
+          {String(draft.heading)}
         </h1>
         <p className="text-primary-foreground/80 text-lg md:text-xl mb-10 max-w-2xl mx-auto animate-fade-in opacity-0 [animation-delay:0.4s] font-body">
-          Nurturing minds, building character, and shaping the leaders of tomorrow
-          in the heart of Daryaganj, Delhi.
+          {String(draft.subheading)}
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in opacity-0 [animation-delay:0.6s]">
           <Link
             to="/admissions"
             className="inline-flex items-center justify-center px-8 py-3.5 bg-primary text-primary-foreground font-medium rounded-full hover:bg-primary/90 transition-all duration-300 hover:shadow-lg"
           >
-            Admissions Open 2026-27
+            {String(draft.cta_label)} {String(draft.session_year)}
           </Link>
           <Link
             to="/about"

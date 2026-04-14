@@ -1,21 +1,53 @@
 import { useState } from "react";
+import PageSEO from "@/components/PageSEO";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import SectionHeader from "@/components/SectionHeader";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
 import { toast } from "sonner";
+import { usePreviewSectionDraft } from "@/components/admin/PreviewDraftContext";
+import { contactDefaults } from "@/lib/cmsDefaults";
+import { useContentBlocks } from "@/hooks/useContentBlocks";
+import { supabase } from "@/lib/supabase";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Contact = () => {
+  const infoQuery = useContentBlocks("contact", "info");
+  const formSettingsQuery = useContentBlocks("contact", "form_settings");
+  const info = usePreviewSectionDraft("contact", "info", { ...contactDefaults.info, ...(infoQuery.data ?? {}) });
+  const formSettings = usePreviewSectionDraft("contact", "form_settings", { ...contactDefaults.form_settings, ...(formSettingsQuery.data ?? {}) });
   const [form, setForm] = useState({ name: "", email: "", phone: "", subject: "", message: "" });
+  if (infoQuery.isLoading || formSettingsQuery.isLoading) {
+    return <div className="min-h-screen"><Navbar /><section className="section-padding"><Skeleton className="h-72 w-full" /></section><Footer /></div>;
+  }
+  if (infoQuery.error || formSettingsQuery.error) {
+    return <div className="min-h-screen"><Navbar /><section className="section-padding"><div className="text-sm text-destructive">Failed to load contact page.</div></section><Footer /></div>;
+  }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Thank you! Your message has been sent. We'll get back to you soon.");
-    setForm({ name: "", email: "", phone: "", subject: "", message: "" });
+    try {
+      const { error } = await supabase.from("contact_submissions").insert({
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        subject: form.subject,
+        message: form.message,
+      });
+      if (error) throw error;
+      toast.success(String(formSettings.success_message));
+      setForm({ name: "", email: "", phone: "", subject: "", message: "" });
+    } catch {
+      toast.error("Failed to send message. Please try again.");
+    }
   };
 
   return (
     <div className="min-h-screen">
+      <PageSEO
+        title="Contact Us"
+        description="Contact Vardhman Shiksha Mandir, Daryaganj, New Delhi. Phone: 01123277448. Email: vardhmanschool@yahoo.co.in. Office hours: Mon–Sat 8 AM–3 PM."
+        path="/contact"
+      />
       <Navbar />
       <section className="relative pt-32 pb-20 px-4">
         <div className="absolute inset-0 bg-primary/5" />
@@ -30,13 +62,13 @@ const Contact = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
             {/* Contact Info */}
             <div>
-              <h2 className="font-heading text-2xl font-bold text-foreground mb-8">Get in Touch</h2>
+              <h2 className="font-heading text-2xl font-bold text-foreground mb-8">{String(formSettings.form_heading)}</h2>
               <div className="space-y-6">
                 {[
-                  { icon: MapPin, label: "Address", value: "Daryaganj, New Delhi - 110002, India" },
-                  { icon: Phone, label: "Phone", value: "+91 11 2327 XXXX" },
-                  { icon: Mail, label: "Email", value: "info@vardhmanshikshamandir.edu.in" },
-                  { icon: Clock, label: "Office Hours", value: "Mon - Sat: 8:00 AM - 3:00 PM" },
+                  { icon: MapPin, label: "Address", value: info.address },
+                  { icon: Phone, label: "Phone", value: info.phone },
+                  { icon: Mail, label: "Email", value: info.email },
+                  { icon: Clock, label: "Office Hours", value: info.office_hours },
                 ].map((item) => (
                   <div key={item.label} className="flex items-start gap-4">
                     <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">

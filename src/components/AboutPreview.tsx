@@ -1,7 +1,16 @@
 import { Link } from "react-router-dom";
-import aboutImg from "@/assets/about-school.jpg";
+import { usePreviewSectionDraft } from "@/components/admin/PreviewDraftContext";
+import { homeDefaults } from "@/lib/cmsDefaults";
+import { useContentBlocks } from "@/hooks/useContentBlocks";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const AboutPreview = () => {
+  const query = useContentBlocks("home", "about_preview");
+  const merged = { ...homeDefaults.about_preview, ...(query.data ?? {}) };
+  const draft = usePreviewSectionDraft("home", "about_preview", merged);
+  if (query.isLoading) return <section className="section-padding"><Skeleton className="h-72 w-full" /></section>;
+  if (query.error) return <section className="section-padding"><div className="text-sm text-destructive">Failed to load About preview.</div></section>;
+
   return (
     <section className="section-padding">
       <div className="container-narrow mx-auto">
@@ -9,28 +18,22 @@ const AboutPreview = () => {
           <div className="order-2 lg:order-1">
             <p className="text-sm font-medium tracking-[0.2em] uppercase text-secondary mb-4">About Our School</p>
             <h2 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-6 leading-tight">
-              A Legacy of Excellence in Education
+              {String(draft.heading)}
             </h2>
             <p className="text-muted-foreground leading-relaxed mb-4">
-              Vardhman Shiksha Mandir, located in the historic Daryaganj area of Delhi, has been
-              a beacon of quality education. Our institution blends traditional Indian values
-              with modern pedagogical approaches to create well-rounded individuals.
-            </p>
-            <p className="text-muted-foreground leading-relaxed mb-8">
-              With dedicated faculty, world-class infrastructure, and a nurturing environment,
-              we empower every student to achieve their fullest potential.
+              {String(draft.body)}
             </p>
             <Link
               to="/about"
               className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground font-medium rounded-full hover:bg-primary/90 transition-all duration-300"
             >
-              Read Our Story
+              {String(draft.button_label)}
             </Link>
           </div>
           <div className="order-1 lg:order-2">
             <div className="relative">
               <img
-                src={aboutImg}
+                src={String(draft.image_url)}
                 alt="School Library"
                 className="rounded-xl shadow-lg w-full"
                 loading="lazy"
@@ -38,8 +41,8 @@ const AboutPreview = () => {
                 height={600}
               />
               <div className="absolute -bottom-6 -left-6 bg-primary text-primary-foreground p-6 rounded-xl shadow-lg hidden md:block">
-                <div className="text-3xl font-heading font-bold">25+</div>
-                <div className="text-sm text-primary-foreground/80">Years of Excellence</div>
+                <div className="text-3xl font-heading font-bold">{String(draft.years_badge)}</div>
+                <div className="text-sm text-primary-foreground/80">49+ Years of Excellence</div>
               </div>
             </div>
           </div>

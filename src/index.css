@@ -104,8 +104,26 @@
   .container-narrow {
     @apply max-w-6xl mx-auto;
   }
+
+  .announcement-marquee-track {
+    @apply flex min-w-max gap-10;
+    animation: announcement-marquee 24s linear infinite;
+  }
+
+  .announcement-marquee-item {
+    @apply whitespace-nowrap;
+  }
 }
 
 html {
   scroll-behavior: smooth;
+}
+
+@keyframes announcement-marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
 }

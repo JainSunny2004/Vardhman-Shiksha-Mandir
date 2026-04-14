@@ -32,6 +32,7 @@ const navLinks = [
   },
   { label: "Facilities", path: "/facilities" },
   { label: "Admissions", path: "/admissions" },
+  { label: "Faculty", path: "/faculty" },
   { label: "Gallery", path: "/gallery" },
   { label: "Contact", path: "/contact" },
 ];
@@ -113,7 +114,7 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {mobileOpen && (
-        <div className="lg:hidden bg-background border-t border-border shadow-lg animate-fade-in">
+        <div className="lg:hidden bg-background border-t border-border shadow-lg animate-fade-in overflow-y-auto max-h-[calc(100vh-5rem)]">
           <div className="px-4 py-4 space-y-1">
             {navLinks.map((link) => (
               <div key={link.label}>

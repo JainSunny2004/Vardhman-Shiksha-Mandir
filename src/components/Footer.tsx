@@ -1,7 +1,13 @@
 import { Link } from "react-router-dom";
 import { MapPin, Phone, Mail } from "lucide-react";
+import { useContentBlocks } from "@/hooks/useContentBlocks";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Footer = () => {
+  const infoQuery = useContentBlocks("contact", "info");
+  if (infoQuery.isLoading) return <footer className="bg-foreground text-primary-foreground p-8"><Skeleton className="h-20 w-full" /></footer>;
+  const info = infoQuery.data ?? {};
+
   return (
     <footer className="bg-foreground text-primary-foreground">
       <div className="container-narrow mx-auto section-padding">
@@ -16,15 +22,15 @@ const Footer = () => {
             <div className="space-y-3 text-sm text-primary-foreground/70">
               <div className="flex items-start gap-3">
                 <MapPin size={16} className="mt-0.5 shrink-0" />
-                <span>Daryaganj, New Delhi - 110002</span>
+                <span>{String(info.address ?? "Daryaganj, New Delhi - 110002")}</span>
               </div>
               <div className="flex items-center gap-3">
                 <Phone size={16} className="shrink-0" />
-                <span>+91 11 2327 XXXX</span>
+                <span>{String(info.phone ?? "01123277448")}</span>
               </div>
               <div className="flex items-center gap-3">
                 <Mail size={16} className="shrink-0" />
-                <span>info@vardhmanshikshamandir.edu.in</span>
+                <span>{String(info.email ?? "vardhmanschool@yahoo.co.in")}</span>
               </div>
             </div>
           </div>
@@ -57,10 +63,10 @@ const Footer = () => {
             <h4 className="font-heading text-lg font-semibold mb-4">Explore</h4>
             <ul className="space-y-2 text-sm">
               {[
+                { label: "Faculty", path: "/faculty" },
                 { label: "Student Life", path: "/student-life" },
                 { label: "Facilities", path: "/facilities" },
-                { label: "Events", path: "/student-life#events" },
-                { label: "Admin Panel", path: "/admin" },
+                { label: "Mandatory Disclosure", path: "/mandatory-disclosure" },
               ].map((link) => (
                 <li key={link.path}>
                   <Link
