@@ -1,6 +1,6 @@
-import academics from "@/assets/academics.jpg";
-import facilities from "@/assets/facilities.jpg";
-import studentLife from "@/assets/student-life.jpg";
+import academics from "@/assets/academics-highlight.jpg";
+import facilities from "@/assets/facilities-highlight.jpg";
+import studentLife from "@/assets/student-life-highlight.jpg";
 import heroImg from "@/assets/hero-school.jpg";
 import aboutImg from "@/assets/about-school.jpg";
 
