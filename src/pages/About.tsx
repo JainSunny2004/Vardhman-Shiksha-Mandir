@@ -2,7 +2,7 @@ import PageSEO from "@/components/PageSEO";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SectionHeader from "@/components/SectionHeader";
-import heroImg from "@/assets/hero-school.jpg";
+import schoolBuildingImg from "@/assets/school-building.jpg";
 import { usePreviewSectionDraft } from "@/components/admin/PreviewDraftContext";
 import { aboutDefaults } from "@/lib/cmsDefaults";
 import { useContentBlocks, useLeadership } from "@/hooks/useContentBlocks";
@@ -85,7 +85,7 @@ const About = () => {
                 {String(schoolOverview.body)}
               </p>
             </div>
-            <img src={heroImg} alt="School Campus" className="rounded-xl shadow-lg" loading="lazy" width={800} height={600} />
+            <img src={schoolBuildingImg} alt="School Campus" className="rounded-xl shadow-lg" loading="lazy" width={800} height={600} />
           </div>
         </div>
       </section>
