@@ -26,7 +26,6 @@ const navLinks = [
     path: "/student-life",
     children: [
       { label: "Activities", path: "/student-life#activities" },
-      { label: "Clubs", path: "/student-life#clubs" },
       { label: "Events", path: "/student-life#events" },
     ],
   },

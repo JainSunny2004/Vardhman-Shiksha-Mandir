@@ -3,7 +3,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SectionHeader from "@/components/SectionHeader";
 import { Calendar } from "lucide-react";
-import studentLifeImg from "@/assets/student-life.jpg";
+import studentLifeImg from "@/assets/student-activities.jpg";
 import { usePreviewSectionDraft } from "@/components/admin/PreviewDraftContext";
 import { studentLifeDefaults } from "@/lib/cmsDefaults";
 import { useContentBlocks, useEvents } from "@/hooks/useContentBlocks";
@@ -12,20 +12,17 @@ import { Skeleton } from "@/components/ui/skeleton";
 const StudentLife = () => {
   const introQuery = useContentBlocks("student-life", "intro");
   const activitiesQuery = useContentBlocks("student-life", "activities");
-  const clubsQuery = useContentBlocks("student-life", "clubs");
   const eventsQuery = useEvents();
-  if (introQuery.isLoading || activitiesQuery.isLoading || clubsQuery.isLoading || eventsQuery.isLoading) {
+  if (introQuery.isLoading || activitiesQuery.isLoading || eventsQuery.isLoading) {
     return <div className="min-h-screen"><Navbar /><section className="section-padding"><Skeleton className="h-72 w-full" /></section><Footer /></div>;
   }
-  if (introQuery.error || activitiesQuery.error || clubsQuery.error || eventsQuery.error) {
+  if (introQuery.error || activitiesQuery.error || eventsQuery.error) {
     return <div className="min-h-screen"><Navbar /><section className="section-padding"><div className="text-sm text-destructive">Failed to load student life content.</div></section><Footer /></div>;
   }
   const intro = usePreviewSectionDraft("student-life", "intro", { ...studentLifeDefaults.intro, ...(introQuery.data ?? {}) });
   const activities = usePreviewSectionDraft("student-life", "activities", { ...studentLifeDefaults.activities, ...(activitiesQuery.data ?? {}) });
-  const clubs = usePreviewSectionDraft("student-life", "clubs", { ...studentLifeDefaults.clubs, ...(clubsQuery.data ?? {}) });
   const events = eventsQuery.data ?? [];
   const activityItems = Array.isArray(activities.items) ? activities.items : studentLifeDefaults.activities.items;
-  const clubCards = Array.isArray(clubs.cards) ? clubs.cards : studentLifeDefaults.clubs.cards;
 
   return (
     <div className="min-h-screen">
@@ -66,21 +63,7 @@ const StudentLife = () => {
         </div>
       </section>
 
-      <section id="clubs" className="section-padding bg-muted">
-        <div className="container-narrow mx-auto">
-          <SectionHeader title="Clubs" subtitle="Join a community that shares your interests" />
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {clubCards.map((club, index) => (
-              <div key={`${String(club.name)}-${index}`} className="bg-card p-6 rounded-xl border border-border text-center hover:shadow-lg transition-all duration-300">
-                <h3 className="font-heading text-lg font-semibold text-card-foreground mb-2">{String(club.name)}</h3>
-                <p className="text-muted-foreground text-sm">{String(club.description)}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="events" className="section-padding">
+<section id="events" className="section-padding">
         <div className="container-narrow mx-auto">
           <SectionHeader title="Events" subtitle="Celebrating milestones and achievements" />
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

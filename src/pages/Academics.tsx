@@ -2,8 +2,8 @@ import PageSEO from "@/components/PageSEO";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SectionHeader from "@/components/SectionHeader";
-import academicsImg from "@/assets/academics.jpg";
-import { BookOpen, Beaker, Calculator, Globe, Palette, Dumbbell } from "lucide-react";
+import academicsImg from "@/assets/curriculum.jpg";
+import { BookOpen, Beaker, Calculator, TrendingUp, Palette, Dumbbell } from "lucide-react";
 import { useContentBlocks } from "@/hooks/useContentBlocks";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePreviewSectionDraft } from "@/components/admin/PreviewDraftContext";
@@ -12,7 +12,7 @@ const defaultDepartments = [
   { name: "English & Languages", icon_name: "BookOpen", description: "Comprehensive language programs developing communication and literary skills." },
   { name: "Science", icon_name: "Beaker", description: "Hands-on learning in Physics, Chemistry, and Biology with modern lab facilities." },
   { name: "Mathematics", icon_name: "Calculator", description: "Building analytical thinking and problem-solving skills." },
-  { name: "Social Studies", icon_name: "Globe", description: "Understanding history, geography, civics, and economics." },
+  { name: "Commerce", icon_name: "TrendingUp", description: "Accounting, Business Studies, and Economics preparing students for careers in finance and trade." },
   { name: "Arts & Humanities", icon_name: "Palette", description: "Nurturing creativity through visual arts and performing arts." },
   { name: "Physical Education", icon_name: "Dumbbell", description: "Promoting fitness and sportsmanship." },
 ];
@@ -21,7 +21,7 @@ const iconMap: Record<string, React.ElementType> = {
   BookOpen,
   Beaker,
   Calculator,
-  Globe,
+  TrendingUp,
   Palette,
   Dumbbell,
 };

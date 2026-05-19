@@ -1,7 +1,7 @@
 import PageSEO from "@/components/PageSEO";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Monitor, BookOpen, Dumbbell, Beaker, Music, Utensils } from "lucide-react";
+import { Monitor, BookOpen, Dumbbell, Beaker, Music, Utensils, Shield, GraduationCap, Heart } from "lucide-react";
 import { useContentBlocks } from "@/hooks/useContentBlocks";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -70,8 +70,114 @@ const Facilities = () => {
               );
             })}
           </div>
-          {safetyQuery.data?.body ? <p className="mt-8 text-muted-foreground">{String(safetyQuery.data.body)}</p> : null}
-          {supportQuery.data?.body ? <p className="mt-3 text-muted-foreground">{String(supportQuery.data.body)}</p> : null}
+        </div>
+      </section>
+
+      {/* Additional Facilities */}
+      <section className="section-padding bg-muted">
+        <div className="container-narrow mx-auto">
+          <h2 className="font-heading text-3xl font-bold text-foreground mb-4">Additional Facilities</h2>
+          <p className="text-muted-foreground leading-relaxed mb-8">
+            Vardhman Shiksha Mandir is set on a <span className="font-medium text-foreground">5,059 sq. metre urban campus</span> in Daryaganj, New Delhi, designed to nurture every dimension of student life — academic, physical, and personal. Beyond the core classrooms, students have access to airy, blackboard-equipped classrooms, dedicated science and computer laboratories, a well-stocked library, and spaces for indoor and outdoor sports, dance, and music.
+          </p>
+
+          {/* Infrastructure highlights */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+            {[
+              { title: "Campus", body: "5,059 sq. m. of green urban campus providing ample space for learning, sport, and recreation." },
+              { title: "Classrooms", body: "Airy rooms fitted with blackboards and modern amenities for a focused learning atmosphere." },
+              { title: "Laboratories", body: "Science and Computer labs equipped for hands-on experimentation and digital literacy." },
+              { title: "Library", body: "A curated collection of academic and recreational books supporting every interest and grade level." },
+              { title: "Sports", body: "Indoor game rooms and an outdoor sports ground fostering fitness, teamwork, and sportsmanship." },
+              { title: "Performing Arts", body: "Dedicated dance and music rooms for students to explore and develop their creative talents." },
+            ].map((item) => (
+              <div key={item.title} className="bg-card rounded-xl border border-border p-6">
+                <h4 className="font-heading font-semibold text-card-foreground mb-2">{item.title}</h4>
+                <p className="text-muted-foreground text-sm leading-relaxed">{item.body}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Safety & Security */}
+          <div className="mb-12">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                <Shield className="text-primary" size={20} />
+              </div>
+              <h3 className="font-heading text-2xl font-semibold text-foreground">Safety &amp; Security</h3>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {[
+                { title: "CCTV Surveillance", body: "Security cameras cover the entire premises, ensuring every corner of the campus remains monitored and safe throughout the school day." },
+                { title: "Fire Safety Compliance", body: "The school has fulfilled all fire prevention and safety requirements mandated by the Delhi Fire Service, with extinguishers and evacuation plans in place." },
+                { title: "Emergency Preparedness", body: "Regular drills and documented emergency protocols keep staff and students ready to respond calmly and effectively in any situation." },
+              ].map((item) => (
+                <div key={item.title} className="bg-card rounded-xl border border-border p-6">
+                  <h4 className="font-heading font-semibold text-card-foreground mb-2">{item.title}</h4>
+                  <p className="text-muted-foreground text-sm leading-relaxed">{item.body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Support Services */}
+          <div>
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                <Heart className="text-primary" size={20} />
+              </div>
+              <h3 className="font-heading text-2xl font-semibold text-foreground">Student Support Services</h3>
+            </div>
+            <p className="text-muted-foreground leading-relaxed mb-6">
+              We believe academic success and personal well-being go hand in hand. Our counselling team works alongside teachers and parents to give every student the support they need.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {[
+                {
+                  icon: GraduationCap,
+                  title: "Academic Counselling",
+                  points: [
+                    "Subject and stream selection aligned with strengths and career goals",
+                    "Study skills, time management, and exam preparation guidance",
+                    "Career and higher-education pathway advisory",
+                  ],
+                },
+                {
+                  icon: Heart,
+                  title: "Personal Counselling",
+                  points: [
+                    "Safe, confidential space to discuss personal challenges and stress",
+                    "Peer and teacher conflict resolution support",
+                    "Mental health awareness and confidence-building programmes",
+                  ],
+                },
+                {
+                  icon: Shield,
+                  title: "Parental Engagement",
+                  points: [
+                    "Regular parent–teacher–counsellor meetings to track progress",
+                    "Workshops on supporting children's academic and emotional growth",
+                    "Open-door policy for parents to raise concerns at any time",
+                  ],
+                },
+              ].map(({ icon: Icon, title, points }) => (
+                <div key={title} className="bg-card rounded-xl border border-border p-6">
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                    <Icon className="text-primary" size={20} />
+                  </div>
+                  <h4 className="font-heading font-semibold text-card-foreground mb-3">{title}</h4>
+                  <ul className="space-y-2">
+                    {points.map((p) => (
+                      <li key={p} className="flex items-start gap-2 text-sm text-muted-foreground">
+                        <div className="w-1.5 h-1.5 rounded-full bg-secondary mt-1.5 shrink-0" />
+                        {p}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
