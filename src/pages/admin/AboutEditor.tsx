@@ -3,6 +3,7 @@ import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import EditorLayout from "@/components/admin/EditorLayout";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Input } from "@/components/ui/input";
@@ -12,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { uploadImageToBucket } from "@/lib/adminUploads";
 import { aboutDefaults } from "@/lib/cmsDefaults";
 import { useSectionContentBlocks, useUpsertSectionContentBlocks } from "@/hooks/useAdminContentBlocks";
+import { supabase } from "@/lib/supabase";
 import type { PreviewDraftData } from "@/components/admin/PreviewDraftContext";
 
 const missionPointSchema = z.object({
@@ -68,9 +70,22 @@ const AboutEditor = () => {
   const missionQuery = useSectionContentBlocks("about", "mission", aboutDefaults.mission);
   const managerQuery = useSectionContentBlocks("about", "manager_message", aboutDefaults.manager_message);
   const principalQuery = useSectionContentBlocks("about", "principal_message", aboutDefaults.principal_message);
-  const leadershipQuery = useSectionContentBlocks("about", "leadership_cards", aboutDefaults.leadership_cards);
+  const leadershipQuery = useQuery({
+    queryKey: ["admin_leadership"],
+    queryFn: async () => {
+      try {
+        const { data, error } = await supabase.from("leadership").select("*").order("sort_order", { ascending: true });
+        if (error) throw error;
+        return { cards: (data ?? []).map((r) => ({ role: r.role, name: r.name, qualification: r.qualification ?? "", bio: r.bio ?? "", photo_url: r.photo_url ?? "" })) };
+      } catch {
+        toast.error("Failed to load leadership entries.");
+        return aboutDefaults.leadership_cards;
+      }
+    },
+  });
 
   const upsertMutation = useUpsertSectionContentBlocks();
+  const queryClient = useQueryClient();
   const watchedValues = useWatch({ control: form.control });
   const [draftData, setDraftData] = useState<PreviewDraftData>(aboutDefaults as unknown as PreviewDraftData);
   const [uploadingField, setUploadingField] = useState<string | null>(null);
@@ -174,7 +189,20 @@ const AboutEditor = () => {
       photo_url: "image",
       quote: "text",
     });
-    await saveSection("leadership_cards", values.leadership_cards, { cards: "json" });
+    try {
+      const { error: delError } = await supabase.from("leadership").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+      if (delError) throw delError;
+      const rows = values.leadership_cards.cards.map((c, i) => ({ role: c.role, name: c.name, qualification: c.qualification, bio: c.bio, photo_url: c.photo_url || null, sort_order: i }));
+      if (rows.length > 0) {
+        const { error: insError } = await supabase.from("leadership").insert(rows);
+        if (insError) throw insError;
+      }
+      queryClient.invalidateQueries({ queryKey: ["admin_leadership"] });
+      queryClient.invalidateQueries({ queryKey: ["leadership_public"] });
+    } catch {
+      toast.error("Failed to save leadership entries.");
+      return;
+    }
     toast.success("About page content saved.");
   });
 

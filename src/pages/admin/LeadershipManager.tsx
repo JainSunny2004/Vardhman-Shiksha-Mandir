@@ -70,6 +70,7 @@ const LeadershipManager = () => {
       setFile(null);
       toast.success("Leadership entry created.");
       queryClient.invalidateQueries({ queryKey: ["admin_leadership"] });
+      queryClient.invalidateQueries({ queryKey: ["leadership_public"] });
     },
   });
 
@@ -86,6 +87,7 @@ const LeadershipManager = () => {
     onSuccess: () => {
       toast.success("Leadership entry deleted.");
       queryClient.invalidateQueries({ queryKey: ["admin_leadership"] });
+      queryClient.invalidateQueries({ queryKey: ["leadership_public"] });
     },
   });
 
