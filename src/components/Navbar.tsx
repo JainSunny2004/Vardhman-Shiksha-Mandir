@@ -31,7 +31,6 @@ const navLinks = [
   },
   { label: "Facilities", path: "/facilities" },
   { label: "Admissions", path: "/admissions" },
-  { label: "Faculty", path: "/faculty" },
   { label: "Gallery", path: "/gallery" },
   { label: "Contact", path: "/contact" },
 ];

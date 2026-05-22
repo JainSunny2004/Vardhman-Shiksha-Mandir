@@ -63,7 +63,6 @@ const Footer = () => {
             <h4 className="font-heading text-lg font-semibold mb-4">Explore</h4>
             <ul className="space-y-2 text-sm">
               {[
-                { label: "Faculty", path: "/faculty" },
                 { label: "Student Life", path: "/student-life" },
                 { label: "Facilities", path: "/facilities" },
                 { label: "Mandatory Disclosure", path: "/mandatory-disclosure" },
